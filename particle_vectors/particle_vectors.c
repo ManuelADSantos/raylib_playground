@@ -19,8 +19,8 @@ typedef struct
     int height;
 } Box;
 
-#define RADIUS 5.0f
-#define MAX_PARTICLES 50
+#define RADIUS 2.0f
+#define MAX_PARTICLES 2000
 #define MAX_VELOCITY 200.0f
 #define COLOR_MODES 2
 #define GRAVITY_STRENGTH 0.0f
