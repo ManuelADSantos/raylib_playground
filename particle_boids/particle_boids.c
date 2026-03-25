@@ -20,7 +20,7 @@ typedef struct
 } Box;
 
 #define RADIUS 5.0f
-#define MAX_PARTICLES 50
+#define MAX_PARTICLES 100
 #define MAX_VELOCITY 200.0f
 #define COLOR_MODES 2
 #define GRAVITY_STRENGTH 0.0f
@@ -34,18 +34,19 @@ int main(void)
     //--------------------------------------------------------------------------------------
     const int screenWidth = 1500;
     const int screenHeight = 900;
-    InitWindow(screenWidth, screenHeight, "Particles with VectorsB");
+    InitWindow(screenWidth, screenHeight, "Boids");
 
-    Box box = {(Vector2){screenWidth/6.0, screenHeight / 6.0}, screenWidth * (4.0 / 6.0), screenHeight * (4.0 / 6.0)};
-    // Box box = {(Vector2){250, 150}, 1000, 600};
+    // Box box = {(Vector2){screenWidth/6.0, screenHeight / 6.0}, screenWidth * (4 / 6), screenHeight * (4 / 6)};
+    Box box = {(Vector2){250, 150}, 1000, 600};
+    TraceLog(LOG_INFO, "Box parameters: %d x %d | Width: %d | Height: %d", box.position.x, box.position.y, box.width, box.height);
 
     // Initialize particles
     Particle particles[MAX_PARTICLES];
     for (int i = 0; i < MAX_PARTICLES; i++)
     {
         Particle one_particle;
-        one_particle.position = (Vector2){(int)GetRandomValue(box.position.x+RADIUS, box.position.x + box.width-RADIUS),
-                                          (int)GetRandomValue(box.position.y+RADIUS, box.position.y + box.height-RADIUS)};
+        one_particle.position = (Vector2){(int)GetRandomValue(box.position.x, box.position.x + box.width),
+                                          (int)GetRandomValue(box.position.y, box.position.y + box.height)};
         one_particle.velocity = (Vector2){(float)GetRandomValue(-MAX_VELOCITY, MAX_VELOCITY), (float)GetRandomValue(-MAX_VELOCITY, MAX_VELOCITY)};
         one_particle.acceleration = (Vector2){0.0f, GRAVITY_STRENGTH};
         one_particle.color = (Color){(int)GetRandomValue(0, 255), (int)GetRandomValue(0, 255), (int)GetRandomValue(0, 255), 255};
@@ -60,7 +61,7 @@ int main(void)
     bool showFPS = true;
     bool paused = false;
     bool showVectors = true;
-    int color_mode = 0;
+    int color_mode = 1;
     Vector2 last_velocities[MAX_PARTICLES];
     float masses_play, numerator, denominator;
     Vector2 positions_play, right_part, v1_temp, v2_temp;
@@ -109,22 +110,13 @@ int main(void)
             if (on_edge)
             {
                 Vector2 delta = Vector2Subtract(particles[i].position, edge_position);
-                // Vector2 delta = Vector2Subtract(edge_position,particles[i].position);
                 float distance = Vector2Length(delta);
                 float min_distance = particles[i].radius;
-                // Clipping on edge
                 if (distance < min_distance && distance > 0.0001f)
                 {
                     float overlap = min_distance - distance;
                     Vector2 correction = Vector2Scale(Vector2Normalize(delta), overlap);
                     particles[i].position = Vector2Add(particles[i].position, correction);
-                }
-                // Beyond edge, just move particle back inside without smooth correction to avoid extreme corrections in case of very fast particles or very small radii
-                if (distance > min_distance)
-                {
-                    Vector2 correction = Vector2Scale(Vector2Normalize(delta), -1*distance);
-                    particles[i].position = Vector2Add(particles[i].position, correction);
-                    TraceLog(LOG_INFO, "Particle %d moved back inside edge, distance: %.2f", i, distance);
                 }
             }
 
@@ -187,15 +179,12 @@ int main(void)
 
             // ----------> Movement and color update
             float dt = GetFrameTime();
-            if (!paused)
-            {
-                // Update particle velocity based on acceleration
-                particles[i].velocity.x += particles[i].acceleration.x * dt;
-                particles[i].velocity.y += particles[i].acceleration.y * dt;
-                // Update particle position based on velocity
-                particles[i].position.x += particles[i].velocity.x * dt;
-                particles[i].position.y += particles[i].velocity.y * dt;
-            }
+            // Update particle velocity based on acceleration
+            particles[i].velocity.x += particles[i].acceleration.x * dt;
+            particles[i].velocity.y += particles[i].acceleration.y * dt;
+            // Update particle position based on velocity
+            particles[i].position.x += particles[i].velocity.x * dt;
+            particles[i].position.y += particles[i].velocity.y * dt;
 
             // Update particle color based on velocity
             float speed = Vector2Length(particles[i].velocity);
