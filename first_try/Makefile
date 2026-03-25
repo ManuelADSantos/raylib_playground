@@ -4,7 +4,7 @@ CFLAGS  := -Wall -Wextra -Werror
 # Use pkg-config for Raylib plus explicitly add math
 LDFLAGS := $(shell pkg-config --cflags --libs raylib) -lm 
 
-TARGET  := first_try
+TARGET  := first_try.out
 SRC     := first_try.c
 
 # Default target

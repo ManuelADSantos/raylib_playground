@@ -4,7 +4,7 @@ CFLAGS  := -Wall -Wextra -Werror
 # Use pkg-config for Raylib plus explicitly add math
 LDFLAGS := $(shell pkg-config --cflags --libs raylib) -lm
 
-TARGET  := particle_energy
+TARGET  := particle_energy.out
 SRC     := particle_energy.c
 
 # Default target

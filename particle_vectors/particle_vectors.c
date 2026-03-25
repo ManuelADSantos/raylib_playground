@@ -13,7 +13,7 @@ typedef struct
 } Particle;
 
 #define RADIUS 5.0f
-#define MAX_PARTICLES 1000
+#define MAX_PARTICLES 10
 #define MAX_VELOCITY 200.0f
 #define COLOR_MODES 2
 #define GRAVITY_STRENGTH 100.0f
@@ -48,6 +48,7 @@ int main(void)
     const char *fpsText = 0;
     bool showFPS = true;
     bool paused = false;
+    bool showVectors = true;
     int color_mode = 1;
     Vector2 last_velocities[MAX_PARTICLES];
     float masses_play, numerator, denominator;
@@ -291,6 +292,12 @@ int main(void)
         if (IsKeyPressed(KEY_M))
         {
             color_mode = (color_mode + 1) % COLOR_MODES;
+        }
+
+        // Pressing V will toggle vector display
+        if (IsKeyPressed(KEY_V))
+        {
+            showVectors = !showVectors;
         }
         //----------------------------------------------------------------------------------
 

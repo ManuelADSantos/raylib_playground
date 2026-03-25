@@ -4,7 +4,7 @@ CFLAGS  := -Wall -Wextra -Werror
 # Use pkg-config for Raylib plus explicitly add math
 LDFLAGS := $(shell pkg-config --cflags --libs raylib) -lm
 
-TARGET  := particle_collision
+TARGET  := particle_collision.out
 SRC     := particle_collision.c
 
 # Default target
